@@ -2,6 +2,7 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import path from 'path';
+import cors from 'cors';
 import { ENV } from './lib/env.js';
 import authRoutes from './routes/auth.route.js';
 import messageRoutes from './routes/message.route.js';
@@ -14,6 +15,10 @@ const __dirname = path.resolve();
 const PORT = ENV.PORT || 3000;
 
 app.use(express.json()); // Middleware to parse JSON bodies
+app.use(cors({
+  origin: ENV.CLIENT_URL, // Allow requests from the frontend URL
+  credentials: true,
+})); // Allow CORS requests from the frontend URL with credentials (cookies)
 app.use(cookieParser()); // Middleware to parse cookies
 
 
