@@ -1,7 +1,5 @@
-import { act } from 'react';
 import { create } from 'zustand';
 import {axiosInstance} from '../lib/axios.js';
-import { all } from 'axios';
 import toast from 'react-hot-toast';
 
 export const useChatStore = create((set, get) => ({
