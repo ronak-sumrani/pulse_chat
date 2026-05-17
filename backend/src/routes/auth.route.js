@@ -16,5 +16,10 @@ router.post('/logout', logout);
 router.put('/update-profile', protectRoute, updateProfile);
 // protectRoute middleware is used to ensure that only authenticated users can access the update profile route. It checks for a valid JWT token in the request cookies and allows access if the token is valid, otherwise it returns an unauthorized error.
 
-router.get('/check', protectRoute, (req, res) => res.status(200).json({ user: req.user }));
+router.get('/check', protectRoute, (req, res) => res.status(200).json({
+  _id: req.user._id,
+  fullName: req.user.fullName,
+  email: req.user.email,
+  profilePic: req.user.profilePic,
+}));
 export default router;

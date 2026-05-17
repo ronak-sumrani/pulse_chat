@@ -14,7 +14,7 @@ const __dirname = path.resolve();
 
 const PORT = ENV.PORT || 3000;
 
-app.use(express.json()); // Middleware to parse JSON bodies
+app.use(express.json({ limit: '5mb' })); // Middleware to parse JSON bodies
 app.use(cors({
   origin: ENV.CLIENT_URL, // Allow requests from the frontend URL
   credentials: true,
