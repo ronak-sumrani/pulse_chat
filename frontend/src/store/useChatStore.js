@@ -3,6 +3,8 @@ import {axiosInstance} from '../lib/axios.js';
 import toast from 'react-hot-toast';
 import { useAuthStore } from './useAuthStore.js';
 
+
+
 export const useChatStore = create((set, get) => ({
     allContacts: [],
     chats: [],
@@ -81,5 +83,31 @@ export const useChatStore = create((set, get) => ({
             set({messages: messages}); // Revert to original messages on error
             toast.error(error.response?.data?.message || 'Error sending message');
         }
+    },
+
+    subscribeToMessages: () => {
+        const {selectedUser, isSoundEnabled} = get();
+        if(!selectedUser) return;
+
+        const socket = useAuthStore.getState().socket;
+        socket.on("newMessage", (newMessage) => {
+            const isMessageSentFromSelectedUser = newMessage.senderId === selectedUser._id;
+            if(!isMessageSentFromSelectedUser) return; // only update messages if the new message is from the currently selected user
+            const currentMessages = get().messages;
+            set({messages: [...currentMessages, newMessage]});
+        });
+
+        // play sound when new message arrives and sound is enabled in settings
+        if(isSoundEnabled) {
+            const notificationSound = new Audio('sounds/notification.mp3');
+            notificationSound.currentTime = 0; // reset sound to start so that it can play again if already playing
+            notificationSound.play().catch((e) => console.log("Error playing notification sound", e));
+            
+        }
+    },
+
+    unsubscribeFromMessages: () => {
+        const socket = useAuthStore.getState().socket;
+        socket.off("newMessage");
     }
 }));
